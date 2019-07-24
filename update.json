@@ -1,10 +1,10 @@
 {
   "homepage": "https://github.com/Anon10W1z/bwss/releases",
   "1.8.9": {
-    "1.0": "Initial release"
+    "0.1": "Initial release"
   },
   "promos": {
-    "1.8.9-latest": "1.0",
-    "1.8.9-recommended": "1.0"
+    "1.8.9-latest": "0.1",
+    "1.8.9-recommended": "0.1"
   }
 }
