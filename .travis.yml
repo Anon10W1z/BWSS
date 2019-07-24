@@ -8,7 +8,7 @@ deploy:
   file_glob: true
   file:
     - "build/libs/*.jar"
-    - "viewer/bwss.py"
+    - "viewer/*.py"
   skip_cleanup: true
   on:
     tags: true
