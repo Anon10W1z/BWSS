@@ -1,0 +1,16 @@
+[
+{
+  "modid": "bwss",
+  "name": "BedWars Statistical Suite",
+  "description": "A statistical suite for BedWars",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/Anon10W1z/bwss",
+  "updateUrl": "https://raw.githubusercontent.com/Anon10W1z/bwss/master/update.json",
+  "authorList": ["Anon10W1z"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
