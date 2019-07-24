@@ -323,7 +323,7 @@ def main():
     games = []
 
     root = Tk()
-    root.title('bwss')
+    root.title('BedWars Statistical Suite')
     frame = Frame(root)
     frame.pack()
 

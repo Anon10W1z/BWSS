@@ -1,6 +1,7 @@
 package io.github.anon10w1z.bwss;
 
-public class BwssConstants {
+@SuppressWarnings("WeakerAccess")
+public class BWSSConstants {
     public static final String MODID = "bwss";
     public static final String NAME = "BedWars Statistical Suite";
     public static final String VERSION = "0.1";

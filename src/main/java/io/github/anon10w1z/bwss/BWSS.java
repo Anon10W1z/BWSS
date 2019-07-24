@@ -31,24 +31,35 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"ResultOfMethodCallIgnored", "WeakerAccess"})
-@Mod(modid = BwssConstants.MODID, name = BwssConstants.NAME, version = BwssConstants.VERSION, updateJSON = BwssConstants.UPDATE_JSON)
-public class Bwss {
+@SuppressWarnings({"unused", "ResultOfMethodCallIgnored", "WeakerAccess"})
+@Mod(modid = BWSSConstants.MODID, name = BWSSConstants.NAME, version = BWSSConstants.VERSION, updateJSON = BWSSConstants.UPDATE_JSON)
+public class BWSS {
     @Mod.Instance
-    private static Bwss instance;
+    private static BWSS instance;
     private Logger logger;
 
     private BedWarsGame game;
     private File gamesFolder;
-    private Map<Character, EnumDyeColor> teamDyeMap = Maps.newHashMap();
-    private Map<EnumDyeColor, Character> dyeChatMap = Maps.newHashMap();
-    private List<EnumDyeColor> orderedColors = ImmutableList.of(EnumDyeColor.RED, EnumDyeColor.BLUE, EnumDyeColor.LIME, EnumDyeColor.YELLOW, EnumDyeColor.CYAN, EnumDyeColor.WHITE, EnumDyeColor.PINK, EnumDyeColor.GRAY);
+    private Map<Character, EnumDyeColor> teamDyeMap = Maps.newHashMap(); //chat codes to dye colors
+    private Map<EnumDyeColor, Character> dyeChatMap = Maps.newHashMap(); //dye colors to chat codes
+    private List<EnumDyeColor> orderedColors = ImmutableList.of(EnumDyeColor.RED, EnumDyeColor.BLUE, EnumDyeColor.LIME, EnumDyeColor.YELLOW, EnumDyeColor.CYAN, EnumDyeColor.WHITE, EnumDyeColor.PINK, EnumDyeColor.GRAY); //Hypixel default ordering
     private String lastMap = "";
     private String lastMode = "";
     private int earlyDcCount = 0;
 
     private static Minecraft minecraft = Minecraft.getMinecraft();
 
+    public static BWSS getInstance() {
+        return instance;
+    }
+
+    /**
+     * Obtains an individual line from the scoreboard
+     *
+     * @param scoreboard the Scoreboard object at hand
+     * @param member     the "team" member
+     * @return the corresponding line
+     */
     private String getLine(Scoreboard scoreboard, String member) {
         for (ScorePlayerTeam team : scoreboard.getTeams())
             if (team.getMembershipCollection().contains(member))
@@ -56,6 +67,10 @@ public class Bwss {
         return "";
     }
 
+    /**
+     * Formatted for Hypixel
+     * @return the lines of the scoreboard
+     */
     private List<String> getSidebarScores() {
         Scoreboard scoreboard = minecraft.theWorld.getScoreboard();
         List<String> found = Lists.newArrayList();
@@ -69,14 +84,24 @@ public class Bwss {
         return found;
     }
 
+    /**
+     * Handles the pre-initialization routine
+     * @param event the corresponding FMLPreInitializationEvent
+     */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        this.logger = event.getModLog();
+        logger = event.getModLog();
+        logInfo("Pre-initialization started");
+
+        logInfo("Registering commands");
         ClientCommandHandler.instance.registerCommand(new EndGameCommand());
         ClientCommandHandler.instance.registerCommand(new GameStatusCommand());
+
+        logInfo("Registering event handler");
         MinecraftForge.EVENT_BUS.register(instance);
 
         //tab codes
+        logInfo("Initializing team dye map");
         teamDyeMap.put('R', EnumDyeColor.RED);
         teamDyeMap.put('G', EnumDyeColor.LIME);
         teamDyeMap.put('B', EnumDyeColor.BLUE);
@@ -98,6 +123,7 @@ public class Bwss {
         teamDyeMap.put('8', EnumDyeColor.GRAY);
 
         //reverse, reverse
+        logInfo("Initializing dye chat map");
         for (Map.Entry<Character, EnumDyeColor> entry : teamDyeMap.entrySet()) {
             char key = entry.getKey();
             EnumDyeColor value = entry.getValue();
@@ -105,11 +131,18 @@ public class Bwss {
                 dyeChatMap.put(value, key);
         }
 
+        logInfo("Initializing games folder");
         gamesFolder = new File(event.getSuggestedConfigurationFile().getParentFile().getParentFile(), "bwgames");
         if (!gamesFolder.exists())
             gamesFolder.mkdir();
+
+        logInfo("Pre-initialization finished");
     }
 
+    /**
+     * constantly looks for map and mode in the sidebar
+     * @param event the corresponding RenderGameOverlayEvent
+     */
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
         List<String> sidebar = getSidebarScores();
@@ -122,6 +155,10 @@ public class Bwss {
             });
     }
 
+    /**
+     * Processes chat line-by-line to construct the game
+     * @param event the corresponding ClientChatReceivedEvent
+     */
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
         String message = EnumChatFormatting.getTextWithoutFormattingCodes(event.message.getFormattedText());
@@ -259,7 +296,7 @@ public class Bwss {
                 return;
             }
             return;
-        } else if (message.endsWith("disconnected") && messageWords.length == 2) { //player disconnected but wasn't added to the game yet
+        } else if (message.endsWith("disconnected") && messageWords.length == 2) { //player disconnected but wasn't added to the game yet (edge case)
             String rawMessage = event.message.getFormattedText();
             EnumDyeColor color = teamDyeMap.get(rawMessage.charAt(3));
             if (color == null)
@@ -320,6 +357,10 @@ public class Bwss {
         }
     }
 
+    /**
+     * Handles client player disconnection logic
+     * @param event the corresponding ClientDisconnectionFromServerEvent
+     */
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         if (game != null) {
@@ -350,14 +391,13 @@ public class Bwss {
         }
     }
 
-    public static Bwss getInstance() {
-        return instance;
-    }
-
     public BedWarsGame getGame() {
         return game;
     }
 
+    /**
+     * Used to reset games
+     */
     public void nullifyGame() {
         game = null;
     }
