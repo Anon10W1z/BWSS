@@ -24,6 +24,9 @@ version = "1.0"
 group= "io.github.anon10w1z.bwss" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "bwss"
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 minecraft {
     version = "1.8.9-11.15.1.1722"
     runDir = "run"
