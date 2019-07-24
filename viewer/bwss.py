@@ -275,7 +275,6 @@ def popup_log(e):
     i = e.widget.curselection()[0]
     global games
     game = games[i]
-    start_datetime = datetime.fromtimestamp(float(game['startTime']) / 1000)
     global config
     filename = os.path.join(config['DEFAULT']['games_folder'], game['logFileName'])
     log = ''
