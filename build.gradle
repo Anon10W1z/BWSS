@@ -83,3 +83,12 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from "build/docs/javadoc"
+    classifier "javadoc"
+}
+
+artifacts {
+    archives javadocJar
+}
