@@ -8,6 +8,8 @@ from tkinter import messagebox
 
 
 def get_stat_str(num, dem, places=3):
+    if dem == 0:
+        return 'infinite'
     s = str(round(float(num) / dem, places))
     decimals = len(s.split('.')[1])
     return s + '0' * (places - decimals)
